@@ -24,8 +24,8 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter-api'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 
-  // MySQL Dependency, Date: April, 2023
-  implementation 'com.mysql:mysql-connector-j:8.0.33'
+  // MySQL Dependency
+  implementation 'mysql:mysql-connector-java:8.0.26'
 }
 
 test {
