@@ -1,7 +1,5 @@
 package com.eteration.simplebanking.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,42 +9,93 @@ import java.util.List;
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Column(name="id")
     private Integer id;
 
-    //@Column(name="account_number")
-    private String account_number;
-
-    //@Column(name="owner")
     private String owner;
 
-    //@Column(name="balance")
-    private double balance;
+    @Column(name = "account_number", unique = true, nullable = false)
+    private String accountNumber;
 
-    // List Transaction
-    /*
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
-    @JsonIgnoreProperties({"account"})
-    private List<Transaction> transactionList;
-    */
+    private Double balance;
 
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<DepositTransaction> depositTransactions = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<PhoneBillPaymentTransaction> phoneBillPaymentTransactions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<BillPaymentTransaction> billPaymentTransactions = new ArrayList<>();
+
+
+    // Default constructor for JPA
     public Account(){
     }
 
-    public Account(String owner, String account_number){
+    public Account(String owner, String accountNumber, Double balance) {
         this.owner = owner;
-        this.account_number = account_number;
-        //this.transactionList = new ArrayList<Transaction>();
-        this.balance = 0.0;
+        this.accountNumber = accountNumber;
+        this.balance = balance;
     }
 
-    public Account(Integer id, String account_number, String owner, double balance, List<Transaction> transactionList) {
-        this.id = id;
-        this.account_number = account_number;
-        this.owner = owner;
-        this.balance = balance;
-        //this.transactionList = transactionList;
+
+    public Integer getId() {
+        return id;
     }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public Double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Double balance) {
+        this.balance = balance;
+    }
+
+    public List<DepositTransaction> getDepositTransactions() {
+        return depositTransactions;
+    }
+
+    public List<PhoneBillPaymentTransaction> getPhoneBillPaymentTransactions() {
+        return phoneBillPaymentTransactions;
+    }
+
+    public List<BillPaymentTransaction> getBillPaymentTransactions() {
+        return billPaymentTransactions;
+    }
+
+    /*
+    public void deposit(double amount) {
+        this.balance += amount;
+    }
+
+    public void withdraw(double amount) throws InsufficientBalanceException {
+        if (amount > balance) {
+            throw new InsufficientBalanceException("Insufficient balance for withdrawal");
+        }
+        this.balance -= amount;
+    }
+    */
 }
 
 
