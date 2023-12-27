@@ -1,6 +1,7 @@
 package com.eteration.simplebanking.model;
 
 
+import com.eteration.simplebanking.exception.InsufficientBalanceException;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -105,4 +106,6 @@ public abstract class Transaction {
                 ", approvalCode="+approvalCode +
                 '}';
     }
+
+    public abstract void execute(Account account) throws InsufficientBalanceException;
 }

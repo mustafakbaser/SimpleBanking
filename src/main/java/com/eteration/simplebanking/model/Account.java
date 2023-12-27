@@ -1,8 +1,10 @@
 package com.eteration.simplebanking.model;
 
+import com.eteration.simplebanking.controller.AccountController;
 import com.eteration.simplebanking.exception.InsufficientBalanceException;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,15 +33,19 @@ public class Account {
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<BillPaymentTransaction> billPaymentTransactions = new ArrayList<>();
 
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<Transaction> transactionList = new ArrayList<>();
+
 
     // Default constructor for JPA
     public Account(){
     }
 
-    public Account(String owner, String accountNumber, Double balance) {
+    public Account(String owner, String accountNumber) {
         this.owner = owner;
         this.accountNumber = accountNumber;
-        this.balance = balance;
+        this.balance = 0.0;
+        this.transactionList = new ArrayList<Transaction>();
     }
 
     public Integer getId() {
@@ -74,6 +80,14 @@ public class Account {
         this.balance = balance;
     }
 
+    public List<Transaction> getTransactions() {
+        return transactionList;
+    }
+
+    public void setTransactions(List<Transaction> transactionList) {
+        this.transactionList = transactionList;
+    }
+
     public List<DepositTransaction> getDepositTransactions() {
         return depositTransactions;
     }
@@ -86,6 +100,25 @@ public class Account {
         return billPaymentTransactions;
     }
 
+    public void setDepositTransactions(List<DepositTransaction> depositTransactions) {
+        this.depositTransactions = depositTransactions;
+    }
+
+    public void setPhoneBillPaymentTransactions(List<PhoneBillPaymentTransaction> phoneBillPaymentTransactions) {
+        this.phoneBillPaymentTransactions = phoneBillPaymentTransactions;
+    }
+
+    public void setBillPaymentTransactions(List<BillPaymentTransaction> billPaymentTransactions) {
+        this.billPaymentTransactions = billPaymentTransactions;
+    }
+
+    public List<Transaction> getTransactionList() {
+        return transactionList;
+    }
+
+    public void setTransactionList(List<Transaction> transactionList) {
+        this.transactionList = transactionList;
+    }
 
     public void deposit(double amount) {
         this.balance += amount;
@@ -96,6 +129,23 @@ public class Account {
             throw new InsufficientBalanceException("Insufficient balance for withdrawal");
         }
         this.balance -= amount;
+    }
+
+    public void debit(double amount)  {
+        if (amount > 0 ) {
+            balance += amount;
+        }
+    }
+
+    public void post(Transaction transactions) throws InsufficientBalanceException {
+        if(transactions == null) return;
+
+        if(transactions instanceof DepositTransaction){
+            debit(transactions.getAmount());
+        } else if (transactions instanceof WithdrawalTransaction) {
+            withdraw(transactions.getAmount());
+        }
+        this.transactionList.add(transactions);
     }
 }
 
