@@ -1,9 +1,12 @@
 package com.eteration.simplebanking.model;
 
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE) // Alternative: Using InheritanceType.TABLE_PER_CLASS for separate tables per subclass, allowing custom fields in addition to shared attributes.
@@ -11,13 +14,20 @@ import java.util.Date;
 public abstract class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
 
+    @Column(name = "approval_code")
     private String approvalCode;
 
+    @Column(name = "type")
     private String type;
 
+    @Column(name = "date")
     private LocalDateTime date;
+
+    @Column(name = "amount")
+    private double amount;
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
@@ -26,11 +36,16 @@ public abstract class Transaction {
     public Transaction() {
     }
 
-    public Transaction(String approvalCode, String type, LocalDateTime date, Account account) {
+    public Transaction(String type, LocalDateTime date, Account account, double amount, String approvalCode) {
         this.approvalCode = approvalCode;
         this.type = type;
         this.date = date;
         this.account = account;
+        this.amount = amount;
+    }
+
+    public Transaction(double amount) {
+
     }
 
     public Integer getId() {
@@ -71,5 +86,23 @@ public abstract class Transaction {
 
     public void setAccount(Account account) {
         this.account = account;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "date=" + date +
+                ", amount=" + amount +
+                ", account=" + account +
+                ", approvalCode="+approvalCode +
+                '}';
     }
 }

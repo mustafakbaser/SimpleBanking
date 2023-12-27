@@ -2,6 +2,7 @@ package com.eteration.simplebanking.model;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 public class DepositTransaction extends Transaction{
@@ -40,7 +41,7 @@ public class DepositTransaction extends Transaction{
         this.id = id;
     }
 
-    public Double getAmount() {
+    public double getAmount() {
         return amount;
     }
 

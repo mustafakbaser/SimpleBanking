@@ -1,11 +1,14 @@
 package com.eteration.simplebanking.model;
 
+import com.eteration.simplebanking.exception.InsufficientBalanceException;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-//@Table(name = "account")
+@Table(name = "account")
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +41,6 @@ public class Account {
         this.accountNumber = accountNumber;
         this.balance = balance;
     }
-
 
     public Integer getId() {
         return id;
@@ -84,18 +86,17 @@ public class Account {
         return billPaymentTransactions;
     }
 
-    /*
+
     public void deposit(double amount) {
         this.balance += amount;
     }
 
     public void withdraw(double amount) throws InsufficientBalanceException {
-        if (amount > balance) {
+        if (amount > this.balance) {
             throw new InsufficientBalanceException("Insufficient balance for withdrawal");
         }
         this.balance -= amount;
     }
-    */
 }
 
 
